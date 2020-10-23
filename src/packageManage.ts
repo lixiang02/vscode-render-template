@@ -54,7 +54,11 @@ export class PackageManage extends BaseUtil {
 	installByLerna(packageName: string) {
 		console.log('installByLerna:', packageName);
 		if (!this.shell?.checkLerna() || 
-			!this.shell?.exec(`cd ${this.workspaceRoot} && lerna add ${packageName} --scope=${this.config.mainModuleName}`)) {
+			!( 
+				this.shell?.cd(this.workspaceRoot) && 
+				this.shell?.exec(`lerna add ${packageName} --scope=${this.config.mainModuleName}`)
+			 )
+		) {
 			return false;
 		}
 		return true;
@@ -100,7 +104,11 @@ export class PackageManage extends BaseUtil {
 
 		if (!this.shell?.checkLerna() ||
 			!this.shell?.checkYarn() || 
-			!this.shell?.exec(`cd ${this.workspaceRoot} && lerna exec yarn remove ${packageName} --scope=${this.config.mainModuleName}`)) {
+			!(
+				this.shell?.cd(this.workspaceRoot) && 
+				this.shell?.exec(`lerna exec yarn remove ${packageName} --scope=${this.config.mainModuleName}`)
+			)
+		) {
 	
 			console.log('lerna uninstall error');
 			return false;

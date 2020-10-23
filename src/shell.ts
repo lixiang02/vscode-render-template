@@ -39,4 +39,7 @@ export class ShellContainer{
 		}
 		return true;
 	}
+ 	cd (dir: string | undefined) {
+		return shell.cd(dir);
+	}
 }
