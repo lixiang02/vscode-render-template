@@ -3,31 +3,29 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as mcfcra from '@mcfed/cra-render';
 import { PackageModules } from './packageModules';
-import * as shell from 'shelljs';
+import { PackageManage } from './packageManage';
+import { BaseUtil } from './baseUtils';
 
-shell.config.execPath = shell.which('node').toString();
-
-const messageType = {
+export const messageType = {
 	changeRouter: 'changeRouter',
-	installStatus: 'installStatus'
+	installStatus: 'installStatus',
+	uninstallStatus: 'uninstallStatus'
 };
 
-export class WebViewContainer {
-    packageModulePenal?: PackageModules; 
-    workspaceRoot: string;
-	// usercenter: string;
+export class WebViewContainer extends BaseUtil {
+    packageModulePenal?: PackageModules;
     currentPanel: vscode.WebviewPanel | undefined;
     context: vscode.ExtensionContext;
     viewPath: string;
-    html: string;
+	html: string;
+	packageManage: PackageManage;
     constructor(context: vscode.ExtensionContext, packageModulePenal?: PackageModules) {
-        const rootPath: string = vscode.workspace.rootPath || '';
+		super();
         this.packageModulePenal = packageModulePenal;
-		this.workspaceRoot = rootPath;
-        // this.usercenter = path.resolve(rootPath, '..', 'usercenter');
         this.context = context;
         this.viewPath = '';
-        this.html = '';
+		this.html = '';
+		this.packageManage = new PackageManage(this);
     }
     setPath(p:string) {
        this.viewPath = p;
@@ -52,7 +50,7 @@ export class WebViewContainer {
 				enableCommandUris: true
 			}
 		);
-		this.currentPanel.webview.html = this.html;// this.getMainViewContentForFile();
+		this.currentPanel.webview.html = this.html;
 
 		this.sendMessage(messageType.changeRouter, this.viewPath);
 
@@ -60,8 +58,8 @@ export class WebViewContainer {
 			() => {
 				// When the panel is closed, cancel any future updates to the webview content
 				console.log('close mian view');
-			//   vscode.window.
-			this.currentPanel = undefined;
+				//   vscode.window.
+				this.currentPanel = undefined;
 			},
 			null,
 			this.context.subscriptions
@@ -80,86 +78,19 @@ export class WebViewContainer {
 				  this.renderTemplate(message.text);
 				  return;
 				case 'install':
-				  this.installPackage(message.text);
+				  this.packageManage.installPackage(message.text);
 				  break;
 				case 'uninstall': 
-				  this.uninstallPackage(message.text);
+				  this.packageManage.uninstallPackage(message.text);
 				  break;
 				default: 
 				  return;
 			  }
 			});
     }
-    installPackage(data: any) {
-		data = '@mcfed/cra-render';
-		this.sendMessage(messageType.installStatus, 'loading');
-		if (this.checkProjectUseLerna()) {
-			if (this.installByLerna(data)) {
-				this.sendMessage(messageType.installStatus, 'success');
-				vscode.window.showInformationMessage(`install package success`);
-				return;
-			}
-			this.sendMessage(messageType.installStatus, 'fail');
-			vscode.window.showErrorMessage(`lerna install ${data} error`);
-			return;
-		}
-		if (!(this.installByYarn(data) ||
-		this.installByNpm(data))) {
-			vscode.window.showErrorMessage(`install ${data} error`);
-			this.sendMessage(messageType.installStatus, 'error');
-		}
-
-		this.sendMessage(messageType.installStatus, 'success');
-		vscode.window.showInformationMessage(`install package success`);
-	}
-	installByYarn(packageName: string) {
-		console.log('installByYarn:', packageName);
-		// if (shell.which('yarn') && !this.exec(`yarn add --cwd ${this.usercenter} ${packageName}`)) {
-		if (shell.which('yarn') && !this.exec(`yarn add --cwd ${this.workspaceRoot} ${packageName}`)) {
-				return false;
-		}
-		return true;
-	}
-	installByNpm(packageName: string) {
-		console.log('installByNpm:', packageName);
-		// if (shell.which('npm') && !this.exec(`npm install --cwd ${this.usercenter} ${packageName}`)) {
-		if (shell.which('npm') && !this.exec(`npm install --cwd ${this.workspaceRoot} ${packageName}`)) {
-				return false;
-		}
-		return true;
-	}
-	installByLerna(packageName: string) {
-		console.log('installByLerna:', packageName);
-		// if (!shell.which('lerna') ||
-		// 	!this.exec(`cd ${this.usercenter} && lerna add ${packageName}`)) {
-		if (!shell.which('lerna') ||
-			!this.exec(`cd ${this.workspaceRoot} && lerna add ${packageName}`)) {
-	
-				console.log('lerna install error');
-			return false;
-		}
-		return true;
-	}
-	checkProjectUseLerna() {
-		// if (fs.existsSync(path.resolve(this.usercenter, 'lerna.json'))) {
-		if (fs.existsSync(path.resolve(this.workspaceRoot, 'lerna.json'))) {
-				return true;
-		}
-		return false;
-	}
-	exec(command: string) {
-		if (shell.exec(command).code !== 0) {
-			return false;
-		}
-		return true;
-	}
-	uninstallPackage(data:any) {
-		console.log("==uninstallPackage===", data);
-	}
 	renderTemplate(config:any={}) {
 		console.log('start render template', typeof config,JSON.stringify(config, null, 2));
 		config.namespace = config.modelname;
-		// config.pwd = this.usercenter;
 		config.pwd = this.workspaceRoot;
 
 		mcfcra.renderTemplate(config);
@@ -169,12 +100,10 @@ export class WebViewContainer {
     }
     getCreateModuleViewContentForFile() {
 		return fs.readFileSync(path.resolve(__dirname, '..', 'index.html'), 'utf-8');
-		// return fs.readFileSync(path.resolve(__dirname, '..', 'build/index.html'), 'utf-8');	
 	}
 
 	getPackageModulesViewContentForFile() {
 		 return fs.readFileSync(path.resolve(__dirname, '..', 'index.html'), 'utf-8');
-		// return fs.readFileSync(path.resolve(__dirname, '..', 'build/index.html'), 'utf-8');	
 	}
     
 }

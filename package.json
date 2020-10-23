@@ -2,7 +2,7 @@
 	"name": "mcfedcra-render",
 	"displayName": "mcfedcra-render",
 	"description": "",
-	"version": "0.0.5",
+	"version": "0.0.7",
 	"publisher": "mcfedcra-render",
 	"engines": {
 		"vscode": "^1.49.0"
@@ -19,6 +19,11 @@
 					"type": "string",
 					"default": "aaa",
 					"description": "this is a test config"
+				},
+				"mcf.mainModuleName": {
+					"type": "string",
+					"default": "@user-center/app",
+					"description": "it is main module in lerna project"
 				}
 			}
 		},

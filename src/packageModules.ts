@@ -2,6 +2,8 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
+import { BaseUtil } from './baseUtils';
+import { PackageManage } from './packageManage';
 
 interface PackageData {
 	name: string;
@@ -9,35 +11,22 @@ interface PackageData {
 	[index:string]: any;
 }
 
-export class PackageModules implements vscode.TreeDataProvider<PackageItem> {
+export class PackageModules extends BaseUtil implements vscode.TreeDataProvider<PackageItem> {
 	private _onDidChangeTreeData: vscode.EventEmitter<PackageItem | undefined> = new vscode.EventEmitter<PackageItem | undefined>();
 	readonly onDidChangeTreeData: vscode.Event<PackageItem | undefined> = this._onDidChangeTreeData.event;
-
-    workspaceRoot: string;
-	// usercenter: string;
-	currentPanel: vscode.WebviewPanel | undefined;
-
-    constructor(context: vscode.ExtensionContext) {
-		const workspaceRoot: string = vscode.workspace.rootPath || '';
-		this.workspaceRoot = workspaceRoot;
-		// this.usercenter = path.resolve(workspaceRoot, '..', 'usercenter');
+	packageManage?: PackageManage;
+    constructor(packageManage?: PackageManage) {
+		super();
+		this.packageManage = packageManage;
 	}
 	refresh(): void {
-		console.log('---refresh----');
 		this._onDidChangeTreeData.fire(undefined);
 	}
     
     getTreeItem(element?: any): vscode.TreeItem | Thenable<vscode.TreeItem> {
-		// throw new Error('Method not implemented.');
-		// element.collapsibleState = vscode.TreeItemCollapsibleState.None;
-		console.log("===getTreeItem===");
         return element;
     }
     getChildren(element?: any): vscode.ProviderResult<any[]> {
-		console.log("===getChildren===");
-
-		// throw new Error('Method not implemented.');
-		// const packages = this.processModulesName(fs.readdirSync(path.resolve(this.usercenter, 'packages')));
 		const packages = this.processModulesName(fs.readdirSync(path.resolve(this.workspaceRoot, 'packages')));
 
 		const packageDatas = this.processModules(packages);
@@ -53,7 +42,6 @@ export class PackageModules implements vscode.TreeDataProvider<PackageItem> {
 	}
 	processModules(packages: any[]): PackageData[] {
 		return packages.map(name => {
-			// const packageJsonPath = path.resolve(this.usercenter, 'packages', name, 'package.json');
 			const packageJsonPath = path.resolve(this.workspaceRoot, 'packages', name, 'package.json');
 			if (!fs.existsSync(packageJsonPath)) {
 				return null;
@@ -89,6 +77,7 @@ export class PackageModules implements vscode.TreeDataProvider<PackageItem> {
 	}
 	removeModules(moduleName: string) {
 		console.log('====removeModules===', moduleName);
+		this.packageManage?.uninstallPackage(moduleName);
 	}
 }
 export class PackageItem extends vscode.TreeItem {

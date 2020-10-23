@@ -3,6 +3,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { PackageModules, PackageItem } from './packageModules';
+import { PackageManage } from './packageManage';
 import { WebViewContainer } from './webview';
 
 // this method is called when your extension is activated
@@ -11,7 +12,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const rootPath: string = vscode.workspace.rootPath || '';
 	console.log('Congratulations, your extension "demo" is now active!', rootPath);
 
-	const packageModulesProvider = new PackageModules(context);
+	const packageModulesProvider = new PackageModules(new PackageManage());
 	vscode.window.registerTreeDataProvider('mcfedMenuViewModule', packageModulesProvider);
 
 	vscode.commands.registerCommand('mcfedMenuViewModule.createModule', createCreateModuleView);
@@ -23,21 +24,20 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.commands.registerCommand('mcfedMenuViewModule.removeModules', (node: PackageItem) => packageModulesProvider.menuCommandManager(node, 'removeModules'));
 
 	createMainView();
-	 
-	const conf = vscode.workspace.getConfiguration('mcf');
-	console.log("conf:", JSON.stringify(conf, null, 2));
 
 	function createMainView() {
 		const mainViewPanel = new WebViewContainer(context);
 		mainViewPanel.setHtml(mainViewPanel.getPackageModulesViewContentForFile());
 		mainViewPanel.setPath('/packages');
 		mainViewPanel.createView();
+		return mainViewPanel;
 	}
 	function createCreateModuleView() {
 		const createModuleViewPanel = new WebViewContainer(context, packageModulesProvider);
 		createModuleViewPanel.setHtml(createModuleViewPanel.getCreateModuleViewContentForFile());
 		createModuleViewPanel.setPath('/modulecreate');
 		createModuleViewPanel.createView();
+		return createModuleViewPanel;
 	}
 }
 
