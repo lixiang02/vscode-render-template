@@ -2,7 +2,7 @@
 	"name": "mcfedcra-render",
 	"displayName": "mcfedcra-render",
 	"description": "",
-	"version": "0.0.8",
+	"version": "0.0.9",
 	"publisher": "mcfedcra-render",
 	"engines": {
 		"vscode": "^1.49.0"
