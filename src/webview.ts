@@ -93,15 +93,17 @@ export class WebViewContainer extends BaseUtil {
 		config.namespace = config.modelname;
 		config.pwd = this.workspaceRoot;
 
+		// mcfcra.processConfig(config);
+		mcfcra.processConfig(config);
+		console.log('after process config', JSON.stringify(config, null, 2));
 		mcfcra.renderTemplate(config);
 	
 		console.log('render template success');
 		this.packageModulePenal?.refresh();
-    }
+	}
     getCreateModuleViewContentForFile() {
 		return fs.readFileSync(path.resolve(__dirname, '..', 'index.html'), 'utf-8');
 	}
-
 	getPackageModulesViewContentForFile() {
 		 return fs.readFileSync(path.resolve(__dirname, '..', 'index.html'), 'utf-8');
 	}

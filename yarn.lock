@@ -39,10 +39,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@mcfed/cra-render@^0.0.1":
-  version "0.0.1"
-  resolved "http://nexus.mchz.com.cn:4873/@mcfed%2fcra-render/-/cra-render-0.0.1.tgz#66ef40d7d8742094faf5393861a0408e0dab5d08"
-  integrity sha512-nJvKxjgtfuyIDpIw3FwWY5SpZD34Q2QRuqvw939u+C1MFK82mbZ8bahYUfiqT60KWAUx/1LyCQ3QWIMROcOo9w==
+"@mcfed/cra-render@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.npmjs.org/@mcfed/cra-render/-/cra-render-0.0.3.tgz#ca42b32de4a841d1c93b5bef8dbee2b497564463"
+  integrity sha512-jT6RsCSoPXCqX7I0Am2w49Kbaayt36y2ZoZFTu/AHsVG5ne0SUdJvqGSFsI7rWioH+ThCih6cl24+dCBfmzHVQ==
   dependencies:
     commander "^6.1.0"
     fs-extra "^9.0.1"
@@ -279,7 +279,7 @@ astral-regex@^1.0.0:
 
 at-least-node@^1.0.0:
   version "1.0.0"
-  resolved "http://nexus.mchz.com.cn:4873/at-least-node/-/at-least-node-1.0.0.tgz#602cd4b46e844ad4effc92a8011a3c46e0238dc2"
+  resolved "https://registry.npmjs.org/at-least-node/-/at-least-node-1.0.0.tgz#602cd4b46e844ad4effc92a8011a3c46e0238dc2"
   integrity sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==
 
 balanced-match@^1.0.0:
@@ -388,9 +388,9 @@ color-name@~1.1.4:
   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
 
 commander@^6.1.0:
-  version "6.1.0"
-  resolved "http://nexus.mchz.com.cn:4873/commander/-/commander-6.1.0.tgz#f8d722b78103141006b66f4c7ba1e97315ba75bc"
-  integrity sha512-wl7PNrYWd2y5mp1OK/LhTlv8Ff4kQJQRXXAvF+uU/TPNiVJUxZLRYGj/B0y/lPGAVcSbJqH2Za/cvHmrPMC8mA==
+  version "6.2.0"
+  resolved "https://registry.npmjs.org/commander/-/commander-6.2.0.tgz#b990bfb8ac030aedc6d11bc04d1488ffef56db75"
+  integrity sha512-zP4jEKbe8SHzKJYQmq8Y9gYjtO/POJLgIdKgV7B9qNmABVFVc+ctqSX6iXh4mCpJfRBOabiZ2YKPg8ciDw6C+Q==
 
 concat-map@0.0.1:
   version "0.0.1"
@@ -763,7 +763,7 @@ flatted@^2.0.0:
 
 fs-extra@^9.0.1:
   version "9.0.1"
-  resolved "http://nexus.mchz.com.cn:4873/fs-extra/-/fs-extra-9.0.1.tgz#910da0062437ba4c39fedd863f1675ccfefcb9fc"
+  resolved "https://registry.npmjs.org/fs-extra/-/fs-extra-9.0.1.tgz#910da0062437ba4c39fedd863f1675ccfefcb9fc"
   integrity sha512-h2iAoN838FqAFJY2/qVpzFXy+EBxfVE220PalAqQLDVsFOHLJrZvut5puAbCdNv6WJk+B8ihI+k0c7JK5erwqQ==
   dependencies:
     at-least-node "^1.0.0"
@@ -841,7 +841,7 @@ globby@^11.0.1:
 
 graceful-fs@^4.1.6, graceful-fs@^4.2.0:
   version "4.2.4"
-  resolved "http://nexus.mchz.com.cn:4873/graceful-fs/-/graceful-fs-4.2.4.tgz#2256bde14d3632958c465ebc96dc467ca07a29fb"
+  resolved "https://registry.npmjs.org/graceful-fs/-/graceful-fs-4.2.4.tgz#2256bde14d3632958c465ebc96dc467ca07a29fb"
   integrity sha512-WjKPNJF79dtJAVniUlGGWHYGz2jWxT6VhN/4m1NdkbZ2nOsEF+cI1Edgql5zCRhs/VsQYRvrXctxktVXZUkixw==
 
 growl@1.10.5:
@@ -1081,7 +1081,7 @@ json-stable-stringify-without-jsonify@^1.0.1:
 
 jsonfile@^6.0.1:
   version "6.0.1"
-  resolved "http://nexus.mchz.com.cn:4873/jsonfile/-/jsonfile-6.0.1.tgz#98966cba214378c8c84b82e085907b40bf614179"
+  resolved "https://registry.npmjs.org/jsonfile/-/jsonfile-6.0.1.tgz#98966cba214378c8c84b82e085907b40bf614179"
   integrity sha512-jR2b5v7d2vIOust+w3wtFKZIfpC2pnRmFAhAC/BuweZFQR8qZzxH1OyrQ10HmdVYiXWkYUqPVsz91cG7EL2FBg==
   dependencies:
     universalify "^1.0.0"
@@ -1198,7 +1198,7 @@ ms@2.1.2, ms@^2.1.1:
 
 mustache@^4.0.1:
   version "4.0.1"
-  resolved "http://nexus.mchz.com.cn:4873/mustache/-/mustache-4.0.1.tgz#d99beb031701ad433338e7ea65e0489416c854a2"
+  resolved "https://registry.npmjs.org/mustache/-/mustache-4.0.1.tgz#d99beb031701ad433338e7ea65e0489416c854a2"
   integrity sha512-yL5VE97+OXn4+Er3THSmTdCFCtx5hHWzrolvH+JObZnUYwuaG7XV+Ch4fR2cIrcYI0tFHxS7iyFYl14bW8y2sA==
 
 natural-compare@^1.4.0:
@@ -1640,14 +1640,19 @@ type-fest@^0.8.1:
   resolved "http://nexus.mchz.com.cn:4873/type-fest/-/type-fest-0.8.1.tgz#09e249ebde851d3b1e48d27c105444667f17b83d"
   integrity sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==
 
-typescript@^4.0.2, typescript@^4.0.3:
+typescript@^4.0.2:
   version "4.0.3"
   resolved "http://nexus.mchz.com.cn:4873/typescript/-/typescript-4.0.3.tgz#153bbd468ef07725c1df9c77e8b453f8d36abba5"
   integrity sha512-tEu6DGxGgRJPb/mVPIZ48e69xCn2yRmCgYmDugAVwmJ6o+0u1RI18eO7E7WBTLYLaEVVOhwQmcdhQHweux/WPg==
 
+typescript@^4.0.3:
+  version "4.0.5"
+  resolved "https://registry.npmjs.org/typescript/-/typescript-4.0.5.tgz#ae9dddfd1069f1cb5beb3ef3b2170dd7c1332389"
+  integrity sha512-ywmr/VrTVCmNTJ6iV2LwIrfG1P+lv6luD8sUJs+2eI9NLGigaN+nUQc13iHqisq7bra9lnmUSYqbJvegraBOPQ==
+
 universalify@^1.0.0:
   version "1.0.0"
-  resolved "http://nexus.mchz.com.cn:4873/universalify/-/universalify-1.0.0.tgz#b61a1da173e8435b2fe3c67d29b9adf8594bd16d"
+  resolved "https://registry.npmjs.org/universalify/-/universalify-1.0.0.tgz#b61a1da173e8435b2fe3c67d29b9adf8594bd16d"
   integrity sha512-rb6X1W158d7pRQBg5gkR8uPaSfiids68LTJQYOtEUhoJUWBdaQHsuT/EUduxXYxcrt4r5PJ4fuHW1MHT6p0qug==
 
 uri-js@^4.2.2:
