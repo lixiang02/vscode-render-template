@@ -75,6 +75,7 @@ export class WebViewContainer extends BaseUtil {
 			message => {
 			  switch (message.command) {
 				case 'alert':
+				  this.sendMessage('renderStatus', 'pending');
 				  this.renderTemplate(message.text);
 				  return;
 				case 'install':
@@ -92,13 +93,27 @@ export class WebViewContainer extends BaseUtil {
 		console.log('start render template', typeof config,JSON.stringify(config, null, 2));
 		config.namespace = config.modelname;
 		config.pwd = this.workspaceRoot;
+		if (!config.newRenderProjectDir) {
+			config.newRenderProjectDir = path.resolve(this.workspaceRoot, `packages/${config.modelname}`);
+		}
+		if (fs.existsSync(config.newRenderProjectDir)) {
+			this.showErrorMessage(`模块 ${config.modelname} 已存在`);
+			return ;
+		}
 
-		// mcfcra.processConfig(config);
-		mcfcra.processConfig(config);
-		console.log('after process config', JSON.stringify(config, null, 2));
-		mcfcra.renderTemplate(config);
+		try {
+			mcfcra.processConfig(config);
+			console.log('after process config', JSON.stringify(config, null, 2));
 	
+			mcfcra.renderTemplate(config);
+		} catch (error) {
+			this.showErrorMessage(`模块 创建失败`);
+			this.sendMessage('renderStatus', 'fail');
+			return ;
+		}
 		console.log('render template success');
+		this.sendMessage('renderStatus', 'success');
+		this.showInfoMessage('创建模块成功');
 		this.packageModulePenal?.refresh();
 	}
     getCreateModuleViewContentForFile() {

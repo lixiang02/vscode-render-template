@@ -18,21 +18,21 @@ export class PackageManage extends BaseUtil {
 		if (this.checkProjectUseLerna()) {
 			if (this.installByLerna(data)) {
 				this.webview?.sendMessage(messageType.installStatus, 'success');
-				this.showInfoMessage(`install package success`);
+				this.showInfoMessage(`安装模块成功`);
 				return;
 			}
 			this.webview?.sendMessage(messageType.installStatus, 'fail');
-			this.showErrorMessage(`lerna install ${data} error`);
+			this.showErrorMessage(`安装模块 ${data} 失败`);
 			return;
 		}
 		if (!(this.installByYarn(data) ||
 		this.installByNpm(data))) {
-			this.showErrorMessage(`install ${data} error`);
+			this.showErrorMessage(`安装模块 ${data} 失败`);
 			this.webview?.sendMessage(messageType.installStatus, 'error');
 		}
 
 		this.webview?.sendMessage(messageType.installStatus, 'success');
-		this.showInfoMessage(`install package success`);
+		this.showInfoMessage(`安装模块成功`);
 	}
 
 	installByYarn(packageName: string) {
@@ -82,21 +82,21 @@ export class PackageManage extends BaseUtil {
 		if (this.checkProjectUseLerna()) {
 			if (this.uninstallByLerna(data)) {
 				this.webview?.sendMessage(messageType.uninstallStatus, 'success');
-				this.showInfoMessage(`uninstall package success`);
+				this.showInfoMessage(`卸载模块成功`);
 				return;
 			}
 			this.webview?.sendMessage(messageType.uninstallStatus, 'fail');
-			this.showErrorMessage(`lerna uninstall ${data} error`);
+			this.showErrorMessage(`卸载模块 ${data} 失败`);
 			return;
 		}
 		if (!(this.uninstallByYarn(data) ||
 		this.uninstallByNpm(data))) {
-			this.showErrorMessage(`uninstall ${data} error`);
+			this.showErrorMessage(`卸载模块 ${data} 失败`);
 			this.webview?.sendMessage(messageType.uninstallStatus, 'error');
 		}
 
 		this.webview?.sendMessage(messageType.uninstallStatus, 'success');
-		this.showInfoMessage(`uninstall package success`);
+		this.showInfoMessage(`卸载模块成功`);
 
 	}
 	uninstallByLerna(packageName: string) {
