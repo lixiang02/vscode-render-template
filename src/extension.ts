@@ -13,6 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "demo" is now active!', rootPath);
 
 	const packageModulesProvider = new PackageModules(new PackageManage());
+	if (!packageModulesProvider.checkProjectUseLerna()) { return ; }
 	vscode.window.registerTreeDataProvider('mcfedMenuViewModule', packageModulesProvider);
 
 	vscode.commands.registerCommand('mcfedMenuViewModule.createModule', createCreateModuleView);
@@ -27,6 +28,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	function createMainView() {
 		const mainViewPanel = new WebViewContainer(context);
+		if (!mainViewPanel.checkProjectUseLerna()) { return; }
 		mainViewPanel.setHtml(mainViewPanel.getPackageModulesViewContentForFile());
 		mainViewPanel.setPath('/packages');
 		mainViewPanel.createView();
@@ -34,6 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 	function createCreateModuleView() {
 		const createModuleViewPanel = new WebViewContainer(context, packageModulesProvider);
+		if (!createModuleViewPanel.checkProjectUseLerna()) { return; }
 		createModuleViewPanel.setHtml(createModuleViewPanel.getCreateModuleViewContentForFile());
 		createModuleViewPanel.setPath('/modulecreate');
 		createModuleViewPanel.createView();

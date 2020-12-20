@@ -2,7 +2,7 @@
 	"name": "mcfedcra-render",
 	"displayName": "mcfedcra-render",
 	"description": "",
-	"version": "0.0.10",
+	"version": "0.0.13",
 	"publisher": "mcfedcra-render",
 	"engines": {
 		"vscode": "^1.49.0"
@@ -24,6 +24,11 @@
 					"type": "string",
 					"default": "@user-center/app",
 					"description": "it is main module in lerna project"
+				},
+				"mcf.ignoreModule": {
+					"type": "array",
+					"default": [],
+					"description": "it is ignore module name list in lerna project"
 				}
 			}
 		},

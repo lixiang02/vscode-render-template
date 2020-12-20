@@ -27,7 +27,10 @@ export class PackageModules extends BaseUtil implements vscode.TreeDataProvider<
         return element;
     }
     getChildren(element?: any): vscode.ProviderResult<any[]> {
-		const packages = this.processModulesName(fs.readdirSync(path.resolve(this.workspaceRoot, 'packages')));
+		if (!this.checkProjectUseLerna()) {
+			return [];
+		}
+		const packages = this.processModulesName();
 
 		const packageDatas = this.processModules(packages);
 		return Promise.resolve(
@@ -42,17 +45,23 @@ export class PackageModules extends BaseUtil implements vscode.TreeDataProvider<
 	}
 	processModules(packages: any[]): PackageData[] {
 		return packages.map(name => {
-			const packageJsonPath = path.resolve(this.workspaceRoot, 'packages', name, 'package.json');
+			const packageJsonPath = path.resolve(this.workspaceRoot, this.projectPackages[0], name, 'package.json');
 			if (!fs.existsSync(packageJsonPath)) {
 				return null;
 			}
 			return Object.assign({}, { dirname: name }, require(packageJsonPath));
 		}).filter(e => e);
 	}
-	processModulesName(packages: any[]): any[] {
+	processModulesName(): any[] {
+		const packagePath = path.resolve(this.workspaceRoot, this.projectPackages[0]);
+		const packagesFolders = fs.readdirSync(packagePath);
+
 		// 获取配置筛选模块
 		const config = { ignoreModule: ['demo'] };
-		return packages.filter(e => !config.ignoreModule.includes(e));
+		if (this.config?.ignoreModule && this.config?.ignoreModule && Array.isArray(this.config?.ignoreModule)) {
+			config.ignoreModule = config.ignoreModule.concat(this.config?.ignoreModule);
+		}
+		return packagesFolders.filter(e => !config.ignoreModule.includes(e));
 	}
 	menuCommandManager(node: PackageItem,type: string) {
 		switch (type) {
@@ -70,14 +79,14 @@ export class PackageModules extends BaseUtil implements vscode.TreeDataProvider<
 		}
 	}
 	publishModules(moduleName: string) {
-		console.log('====publishModules===', moduleName);
+		this.packageManage?.publishPackage(moduleName);
 	}
 	buildModules(moduleName: string) {
-		console.log('====buildModules===', moduleName);
+		this.packageManage?.buildPackage(moduleName);
 	}
 	removeModules(moduleName: string) {
-		console.log('====removeModules===', moduleName);
-		this.packageManage?.uninstallPackage(moduleName);
+		this.packageManage?.removePackage(moduleName);
+		this.refresh();
 	}
 }
 export class PackageItem extends vscode.TreeItem {

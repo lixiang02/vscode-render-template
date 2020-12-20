@@ -1,7 +1,6 @@
-import * as fs from 'fs';
-import * as path from 'path';
 import { BaseUtil } from './baseUtils';
 import { WebViewContainer, messageType } from './webview';
+import * as path from 'path';
 
 export class PackageManage extends BaseUtil {
 	webview?: WebViewContainer;
@@ -10,48 +9,20 @@ export class PackageManage extends BaseUtil {
 		this.webview = webview;
 	}
 
-    installPackage(data: any) {
-		if (data === 'disable') {
-			data = '@mcfed/cra-render';
+    installPackage(packageName: any) {
+		if (packageName === 'disable') {
+			packageName = '@mcfed/cra-render';
 		}
 		this.webview?.sendMessage(messageType.installStatus, 'loading');
-		if (this.checkProjectUseLerna()) {
-			if (this.installByLerna(data)) {
-				this.webview?.sendMessage(messageType.installStatus, 'success');
-				this.showInfoMessage(`安装模块成功`);
-				return;
-			}
-			this.webview?.sendMessage(messageType.installStatus, 'fail');
-			this.showErrorMessage(`安装模块 ${data} 失败`);
+		if (this.installByLerna(packageName)) {
+			this.webview?.sendMessage(messageType.installStatus, 'success');
+			this.showInfoMessage(`安装模块成功`);
 			return;
 		}
-		if (!(this.installByYarn(data) ||
-		this.installByNpm(data))) {
-			this.showErrorMessage(`安装模块 ${data} 失败`);
-			this.webview?.sendMessage(messageType.installStatus, 'error');
-		}
-
-		this.webview?.sendMessage(messageType.installStatus, 'success');
-		this.showInfoMessage(`安装模块成功`);
+		this.webview?.sendMessage(messageType.installStatus, 'fail');
+		this.showErrorMessage(`安装模块 ${packageName} 失败`, this.shell?.execResultErrorMessage);
 	}
-
-	installByYarn(packageName: string) {
-		console.log('installByYarn:', packageName);
-		if (!this.shell?.checkYarn() || 
-			!this.shell?.exec(`yarn add --cwd ${this.workspaceRoot} ${packageName}`)) {
-			return false;
-		}
-		return true;
-	}
-	installByNpm(packageName: string) {
-		console.log('installByNpm:', packageName);
-		if (!this.shell?.checkNpm() || 
-			!this.shell?.exec(`npm install --cwd ${this.workspaceRoot} ${packageName}`)) {
-			return false;
-		}
-		return true;
-	}
-	installByLerna(packageName: string) {
+	protected installByLerna(packageName: string) {
 		console.log('installByLerna:', packageName);
 		if (!this.shell?.checkLerna() || 
 			!( 
@@ -63,43 +34,24 @@ export class PackageManage extends BaseUtil {
 		}
 		return true;
 	}
-	checkProjectUseLerna() {
-		if (this.workspaceRoot 
-			&& fs.existsSync(path.resolve(this.workspaceRoot, 'lerna.json'))) {
-			return true;
-		}
-		return false;
-	}
 
-	uninstallPackage(data:any) {
+	uninstallPackage(packageName:string) {
 		// 移除主包的模块
-		console.log("uninstallPackage:", data);
-		if (data === 'disable') {
-			data = '@mcfed/cra-render';
+		console.log("uninstallPackage:", packageName);
+		if (packageName === 'disable') {
+			packageName = '@mcfed/cra-render';
 		}
 
 		this.webview?.sendMessage(messageType.uninstallStatus, 'loading');
-		if (this.checkProjectUseLerna()) {
-			if (this.uninstallByLerna(data)) {
-				this.webview?.sendMessage(messageType.uninstallStatus, 'success');
-				this.showInfoMessage(`卸载模块成功`);
-				return;
-			}
-			this.webview?.sendMessage(messageType.uninstallStatus, 'fail');
-			this.showErrorMessage(`卸载模块 ${data} 失败`);
+		if (this.uninstallByLerna(packageName)) {
+			this.webview?.sendMessage(messageType.uninstallStatus, 'success');
+			this.showInfoMessage(`卸载模块成功`);
 			return;
 		}
-		if (!(this.uninstallByYarn(data) ||
-		this.uninstallByNpm(data))) {
-			this.showErrorMessage(`卸载模块 ${data} 失败`);
-			this.webview?.sendMessage(messageType.uninstallStatus, 'error');
-		}
-
-		this.webview?.sendMessage(messageType.uninstallStatus, 'success');
-		this.showInfoMessage(`卸载模块成功`);
-
+		this.webview?.sendMessage(messageType.uninstallStatus, 'fail');
+		this.showErrorMessage(`卸载模块 ${packageName} 失败`, this.shell?.execResultErrorMessage);
 	}
-	uninstallByLerna(packageName: string) {
+	protected uninstallByLerna(packageName: string) {
 		console.log('uninstallByLerna:', packageName);
 
 		if (!this.shell?.checkLerna() ||
@@ -115,20 +67,51 @@ export class PackageManage extends BaseUtil {
 		}
 		return true;
 	}
-	uninstallByYarn(packageName: string) {
-		console.log('uninstallByYarn:', packageName);
-		if (!this.shell?.checkYarn() || 
-			!this.shell?.exec(`yarn remove --cwd ${this.workspaceRoot} ${packageName}`)) {
-			return false;
+
+	buildPackage(packageName: string) {
+		console.log("buildPackage:", packageName);
+		if (this.buildPackageByYarn(packageName)) {
+			this.showInfoMessage(`构建模块成功`);
+			return;
+		}
+		this.showErrorMessage(`构建模块失败`, this.shell?.execResultErrorMessage);
+	}
+	protected buildPackageByYarn(packageName: string) {
+		if (!this.shell?.checkYarn() ||
+			!(
+				this.shell?.cd(path.resolve(this.workspaceProject, packageName)) &&
+				this.shell?.exec('yarn && yarn build')
+			)
+		) {
+				console.log('yarn build error', packageName);
+				return false;
 		}
 		return true;
 	}
-	uninstallByNpm(packageName: string) {
-		console.log('uninstallByNpm:', packageName);
-		if (!this.shell?.checkNpm() ||
-			!this.shell?.exec(`npm uninstall --cwd ${this.workspaceRoot} ${packageName}`)) {
-			return false;
+
+	publishPackage(packageName: string) {
+		console.log("publishPackage:", packageName);
+		if (this.publishPackageByYarn(packageName)) {
+			this.showInfoMessage(`发布模块成功`);
+			return;
+		}
+		this.showErrorMessage(`发布模块失败`, this.shell?.execResultErrorMessage);
+	}
+	protected publishPackageByYarn(packageName: string) {
+		if (!this.shell?.checkYarn() ||
+			!(
+				this.shell?.cd(path.resolve(this.workspaceProject, packageName)) &&
+				this.shell?.exec('yarn && yarn publish')
+			)
+		) {
+				console.log('yarn publish error', packageName);
+				return false;
 		}
 		return true;
+	}
+	removePackage(packageName: string) {
+		console.log("removePackage:", packageName);
+		this.shell?.rm(path.resolve(this.workspaceProject, packageName));
+		this.showInfoMessage(`移除模块成功`);
 	}
 }

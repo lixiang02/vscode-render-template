@@ -2,14 +2,15 @@ import * as vscode from 'vscode';
 import * as shell from 'shelljs';
 
 export class ShellContainer{
+	execResultErrorMessage?: string;
     constructor() {
         this.setShellNodeDependence();
     }
-    setShellNodeDependence() {
+    protected setShellNodeDependence() {
 		if (shell?.which('node')?.toString()) {
 			shell.config.execPath = shell?.which('node')?.toString();
 		} else {
-			vscode.window.showErrorMessage('not found node command');
+			vscode.window.showErrorMessage('未发现node.js环境');
 		}
     }
     checkYarn() {
@@ -34,12 +35,18 @@ export class ShellContainer{
 		return true;
     }
     exec(command: string) {
-		if (shell.exec(command).code !== 0) {
+		const execResult = shell.exec(command);
+		if (execResult.code !== 0) {
+			this.execResultErrorMessage = execResult;
 			return false;
 		}
+		this.execResultErrorMessage = '';
 		return true;
 	}
  	cd (dir: string | undefined) {
 		return shell.cd(dir);
+	}
+	rm (dir: string) {
+		return shell.rm('-rf', dir);
 	}
 }
