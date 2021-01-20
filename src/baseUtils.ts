@@ -15,16 +15,38 @@ export class BaseUtil {
     workspaceRoot: string;
     workspaceProject: string = '';
     projectPackages: Array<string> = [];
+    mainModuleName: string = '';
     constructor() {
-        // this.workspaceRoot = path.resolve(vscode.workspace.rootPath as string, '..', 'platform') || '';
-        this.workspaceRoot = vscode.workspace.rootPath || '';
+        // this.workspaceRoot = path.resolve(vscode.workspace.rootPath as string, '../../', 'react/gitlab/soc-platform') || '';
+        this.workspaceRoot = vscode.workspace.rootPath || (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders[0].uri.path) || '';
+        console.log('workspaceRoot:', this.workspaceRoot);
         this.config = vscode.workspace.getConfiguration('mcf') as unknown as ConfigType;
         console.log("conf:", JSON.stringify(this.config, null, 2));
         this.shell = new ShellContainer();
-        this.getProjectWorkspace();
+        this.setProjectWorkspace();
+        this.setMainModule();
     }
 
-    protected getProjectWorkspace() {
+    protected setMainModule() {
+        this.mainModuleName = this.config?.mainModuleName || this. getModuleNameByPackagesApp() || '';
+    }
+
+    protected getModuleNameByPackagesApp() {
+        const mainModule = 'app';
+        const workspaceProjects = fs.readdirSync(this.workspaceProject);
+        if (!workspaceProjects.includes(mainModule)) {
+            return null;
+        }
+        try {
+            const mainModulePackage = require(path.resolve(this.workspaceProject, mainModule, 'package.json'));
+            if (!mainModulePackage || !mainModulePackage.name) { return null; }
+            return mainModulePackage.name;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    protected setProjectWorkspace() {
         if (!this.checkProjectUseLerna()) {
             this.showErrorMessage('当前项目不存在 lerna.json 文件');
             return;

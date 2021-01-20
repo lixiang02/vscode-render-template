@@ -10,6 +10,7 @@ export class PackageManage extends BaseUtil {
 	}
 
     installPackage(packageName: any) {
+		console.log('packageName:', packageName);
 		if (packageName === 'disable') {
 			packageName = '@mcfed/cra-render';
 		}
@@ -23,11 +24,12 @@ export class PackageManage extends BaseUtil {
 		this.showErrorMessage(`安装模块 ${packageName} 失败`, this.shell?.execResultErrorMessage);
 	}
 	protected installByLerna(packageName: string) {
-		console.log('installByLerna:', packageName);
+		console.log('installByLerna:', packageName, this.mainModuleName);
 		if (!this.shell?.checkLerna() || 
+			!this.mainModuleName ||
 			!( 
 				this.shell?.cd(this.workspaceRoot) && 
-				this.shell?.exec(`lerna add ${packageName} --scope=${this.config.mainModuleName}`)
+				this.shell?.exec(`lerna add ${packageName} --scope=${this.mainModuleName}`)
 			 )
 		) {
 			return false;
@@ -52,13 +54,14 @@ export class PackageManage extends BaseUtil {
 		this.showErrorMessage(`卸载模块 ${packageName} 失败`, this.shell?.execResultErrorMessage);
 	}
 	protected uninstallByLerna(packageName: string) {
-		console.log('uninstallByLerna:', packageName);
+		console.log('uninstallByLerna:', packageName,  this.mainModuleName);
 
-		if (!this.shell?.checkLerna() ||
+		if (!this.shell?.checkLerna() || 
 			!this.shell?.checkYarn() || 
+			!this.mainModuleName ||
 			!(
 				this.shell?.cd(this.workspaceRoot) && 
-				this.shell?.exec(`lerna exec yarn remove ${packageName} --scope=${this.config.mainModuleName}`)
+				this.shell?.exec(`lerna exec yarn remove ${packageName} --scope=${this.mainModuleName}`)
 			)
 		) {
 	

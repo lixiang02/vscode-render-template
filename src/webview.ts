@@ -9,7 +9,8 @@ import { BaseUtil } from './baseUtils';
 export const messageType = {
 	changeRouter: 'changeRouter',
 	installStatus: 'installStatus',
-	uninstallStatus: 'uninstallStatus'
+	uninstallStatus: 'uninstallStatus',
+	installedPackages: 'installedPackages'
 };
 
 export class WebViewContainer extends BaseUtil {
